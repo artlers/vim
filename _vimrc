@@ -1,6 +1,24 @@
 " _vimrc
-" 修改于：2019-03-09
-" 1、换用vim-plug管理插件，去除过时、冗余插件，默认不加载特定编程语言相关插件
+
+" 修改记录 01
+" 修改日期：2018-04-17
+" 修改内容：
+" 1、统一Windows和Linux配置，只有个别配置有差异，维护2份文件
+" 2、使用Vundle管理插件
+"
+" 修改记录 02
+" 修改日期：2019-03-09
+" 修改内容：
+" 1、换用vim-plug管理插件
+" 2、去除过时、冗余插件，默认不加载特定编程语言相关插件
+"
+" 修改记录 03
+" 修改日期：2019-03-24
+" 修改内容：
+" 1、添加并配置quickmenu插件
+" 2、增加快捷键，插入模式下输入jj返回normal模式
+" 3、因为加载速度和易用性，废弃undotree，换用Gundo
+
 
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
@@ -16,11 +34,12 @@ Plug 'jacoborus/tender.vim'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-Plug 'scrooloose/nerdtree' "打开费时且明显卡顿，用Leaderf替代
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'scrooloose/nerdtree'
+"Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'terryma/vim-multiple-cursors'
-Plug 'mbbill/undotree'
+"Plug 'mbbill/undotree'
+Plug 'sjl/gundo.vim'
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
@@ -35,13 +54,14 @@ Plug 'godlygeek/tabular'
 Plug 'ervandew/supertab'
 " 使用quickmenu
 Plug 'skywind3000/quickmenu.vim'
+
 " 通用编程插件
 Plug 'scrooloose/nerdcommenter'
 Plug 'majutsushi/tagbar'
 " 对齐代码的虚线，写Python尤其需要
 Plug 'Yggdroot/indentLine'
-Plug 'Chiel92/vim-autoformat'
-Plug 'w0rp/ale'
+"Plug 'Chiel92/vim-autoformat'
+"Plug 'w0rp/ale'
 "Plug 'Valloric/YouCompleteMe'
 " Async completion framework made ease
 Plug 'maralla/completor.vim'
@@ -106,9 +126,9 @@ nnoremap <Leader>kw <C-W>k
 nnoremap <Leader>jw <C-W>j
 
 " 加载_vimrc
-nmap <leader>s :source $VIM/_vimrc<cr>
+nmap <leader>s :source $VIM/_vimrc<cr> " 平台差异
 " 编辑_vimrc
-nmap <leader>e :e $VIM/_vimrc<cr>
+nmap <leader>e :e $VIM/_vimrc<cr> " 平台差异
 
 " 保存当前缓冲区
 nnoremap <leader>w :w<cr>
@@ -162,10 +182,13 @@ inoremap <A-l> <Right>
 "删除行末空格 -- 添加到quickmenu
 "nnoremap <leader>tw :%s/\s\+$//<CR>:let @/=''<CR>
 
+" 清除搜索高亮
+nnoremap <leader>, :let @/=''<CR>
+
 "清除行尾的^M符号
 "nnoremap <silent> <F8> :%s//\r/g<CR>:set fileformat=dos<CR>
 
-"行首插入行号
+"行首插入行号 -- 添加到quickmenu
 "nnoremap <silent> <F7> :g/^/exec"s/^/".strpart(line(".")." ",0,4)<CR>
 
 "重定向：选中复制到系统剪切板 F3
@@ -389,7 +412,7 @@ set nobackup
 
 " 保存 undo 历史。必须先行创建 .undo_history/
 if has("persistent_undo")
-    set undodir=$VIM/.undo_history/
+    set undodir=$VIM/vimfiles/undo_history/
     set undofile
 endif
 
@@ -492,9 +515,17 @@ let g:NERDTreeIndicatorMapCustom = {
 
 " UndoTree {{{
 
-nnoremap <F5> :UndotreeToggle<cr>
+"nnoremap <F5> :UndotreeToggle<cr>
 
 " }}}
+
+
+" Gundo {{{
+
+nnoremap <F5> :GundoToggle<cr>
+
+" }}}
+
 
 " The-NERD-Commenter 注释代码用的，以下映射已写在插件中 {{{
 
@@ -531,7 +562,6 @@ let g:quickrun_config = {
 
 let g:quickrun_no_default_key_mappings = 1
 "nmap <Leader>r <Plug>(quickrun)
-"map <F10> :QuickRun<CR>
 
 " }}}
 
@@ -560,7 +590,7 @@ let g:Lf_NormalMap = {
 " 使用 Ctrl + j/k 在匹配项中跳转
 
 " 设置ctrlsf 使用ag
-let g:ctrlsf_ackprg = 'ag'
+let g:ctrlsf_ackprg = 'rg'
 
 " }}}
 
@@ -653,6 +683,6 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 set guifont=DejaVu_Sans_Mono_for_Powerline:h13:cANSI
 
 "配置wombat主题
-let g:airline_theme='wombat'
+"let g:airline_theme='wombat' "--不加载，提高vim速度
 
 " }}}
